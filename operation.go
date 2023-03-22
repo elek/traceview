@@ -15,7 +15,14 @@ type Operation struct {
 var _ tea.Model = &Operation{}
 
 func RenderStat(stat OperationStat) string {
-	return fmt.Sprintf("%6d %16s %16s %30s", stat.Count, timeFormat(stat.Max), timeFormat(stat.Min), stat.Name)
+
+	l := NewLineBuilder(300)
+	def := lipgloss.NewStyle()
+	l.AddSegment(fmt.Sprintf("%d", stat.Count), Sized(3, def))
+	l.AddSegment(timeFormat(stat.Min), Sized(12, Colored(Blue)).Align(lipgloss.Right))
+	l.AddSegment(timeFormat(stat.Max), Sized(12, Colored(Blue)).Align(lipgloss.Right))
+	l.AddSegment(stat.Name, Sized(100, def))
+	return l.String()
 }
 
 func NewOperationPane(root *TreeSpan) tea.Model {
@@ -129,6 +136,9 @@ type OperationInstance struct {
 func (o *OperationInstance) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case ui.FocusedItemMsg[OperationStat]:
+		sort.Slice(msg.Item.Spans, func(i, j int) bool {
+			return msg.Item.Spans[i].Timebox < msg.Item.Spans[j].Timebox
+		})
 		o.List.SetContent(msg.Item.Spans)
 		o.List.Reset()
 	case tea.KeyMsg:
@@ -148,5 +158,19 @@ func (o *OperationInstance) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func RenderStatTrace(instance *TreeSpan) string {
-	return fmt.Sprintf("%10s %20s %16s %16s", instance.SpanID, timeFormat(instance.Duration), timeFormat(instance.Timebox), instance.Process.ServiceName)
+
+	canceled := func(style lipgloss.Style) lipgloss.Style {
+		if instance.HasTag("status", "canceled") {
+			return style.Foreground(Red)
+		}
+		return style
+	}
+
+	l := NewLineBuilder(300)
+	def := lipgloss.NewStyle()
+	l.AddSegment(instance.SpanID, Sized(10, def))
+	l.AddSegment(timeFormat(instance.Duration), Sized(12, Colored(Green)).Align(lipgloss.Right))
+	l.AddSegment(timeFormat(instance.Timebox), Sized(12, Colored(Yellow)).Align(lipgloss.Right))
+	l.AddSegment(instance.Process.ServiceName, Sized(100, canceled(def)))
+	return l.String()
 }

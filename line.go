@@ -43,3 +43,7 @@ func (l *LineBuilder) AddSegment(content string, style lipgloss.Style) {
 func (l *LineBuilder) String() string {
 	return l.out
 }
+
+func Sized(size int, style lipgloss.Style) lipgloss.Style {
+	return style.MaxWidth(size).Width(size).PaddingRight(1)
+}
