@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -89,6 +90,22 @@ func (s *TreeSpan) Recalculate() (time.Time, time.Time) {
 	}
 	s.Timebox = int(end.Sub(start).Microseconds())
 	return start, end
+}
+
+func (s *TreeSpan) Walk(f func(span *TreeSpan) (bool, error)) error {
+	for _, c := range s.Children {
+		cont, err := f(c)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if cont {
+			err = c.Walk(f)
+		}
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+	return nil
 }
 
 type LoadedTrace struct {

@@ -2,25 +2,34 @@ package main
 
 import (
 	"fmt"
+	"github.com/alecthomas/kong"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	ui "github.com/elek/bubbles"
 	"github.com/zeebo/errs/v2"
-	"log"
 	"os"
 )
 
 func main() {
-	err := run()
-	if err != nil {
-		log.Fatalf("%++v", err)
-	}
+	traceview := Traceview{}
+	kCtx := kong.Parse(&traceview)
+	err := kCtx.Run()
+	kCtx.FatalIfErrorf(err)
 }
 
-func run() error {
+type Traceview struct {
+	Grep Grep `cmd:"" `
+	View UI   `cmd:"" default:"withargs"`
+}
+
+type UI struct {
+	TraceFile string `arg:""`
+}
+
+func (u UI) Run() error {
 	l, _ := tea.LogToFile("/tmp/tea.log", "traceview")
 	defer l.Close()
-	trace, err := load(os.Args[1])
+	trace, err := load(u.TraceFile)
 	if err != nil {
 		return errs.Wrap(err)
 	}
