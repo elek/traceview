@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/kong v0.7.1
 	github.com/charmbracelet/bubbletea v0.22.0
 	github.com/charmbracelet/lipgloss v0.5.0
-	github.com/elek/bubbles v0.0.0-20220817064724-1111ac7c4f2f
+	github.com/elek/bubbles v0.0.0-20230403130549-7861b6c5fd46
 	github.com/montanaflynn/stats v0.6.6
 	github.com/pkg/errors v0.9.1
 	github.com/zeebo/errs/v2 v2.0.3
