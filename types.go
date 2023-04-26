@@ -92,9 +92,9 @@ func (s *TreeSpan) Recalculate() (time.Time, time.Time) {
 	return start, end
 }
 
-func (s *TreeSpan) Walk(f func(span *TreeSpan) (bool, error)) error {
+func (s *TreeSpan) Walk(f func(parent *TreeSpan, span *TreeSpan) (bool, error)) error {
 	for _, c := range s.Children {
-		cont, err := f(c)
+		cont, err := f(s, c)
 		if err != nil {
 			return errors.WithStack(err)
 		}

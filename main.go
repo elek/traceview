@@ -18,8 +18,9 @@ func main() {
 }
 
 type Traceview struct {
-	Grep Grep `cmd:"" `
-	View UI   `cmd:"" default:"withargs"`
+	Grep    Grep      `cmd:"" `
+	Process Processor `cmd:"" `
+	View    UI        `cmd:"" default:"withargs"`
 }
 
 type UI struct {

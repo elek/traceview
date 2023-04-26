@@ -48,14 +48,14 @@ func (a Grep) processFile(path string) error {
 		return errors.WithStack(err)
 	}
 	tags := ""
-	return trace.Tree.RootSpans.Walk(func(span *TreeSpan) (bool, error) {
+	return trace.Tree.RootSpans.Walk(func(parent *TreeSpan, span *TreeSpan) (bool, error) {
 		if match(span.OperationName, a.Pattern) {
 			if a.ProcessTags && tags == "" {
 				k := []string{}
 				for _, t := range span.Process.Tags {
 					k = append(k, fmt.Sprintf("%s=%s", t.Key, t.Value))
 				}
-				tags = " " + strings.Join(k, ",") + " "
+				tags = " " + strings.Join(k, ",")
 			}
 			var f string
 			if a.FullPath {
@@ -64,7 +64,7 @@ func (a Grep) processFile(path string) error {
 				f = filepath.Base(path)
 			}
 
-			fmt.Printf("%s %s%s%d\n", f, span.OperationName, tags, span.Duration)
+			fmt.Printf("%s %s%s %d\n", f, span.OperationName, tags, span.Duration)
 		}
 		return true, nil
 	})
