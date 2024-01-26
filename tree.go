@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	ui "github.com/elek/bubbles"
 	"github.com/montanaflynn/stats"
+	"time"
 )
 
 type NavigateTo struct {
@@ -82,6 +83,7 @@ func RenderSpanInfo(current *TreeSpan, selected *TreeSpan) string {
 	out += Colored(Red).Bold(false).Render(current.OperationName) + "\n"
 	out += Colored(ui.White).Bold(false).Render(current.SpanID) + "\n"
 	out += fmt.Sprintf("%-16s: %16s\n", "Duration:", timeFormat(current.Duration))
+	out += fmt.Sprintf("%-16s: %16s\n", "Start:", current.StartTime.Format(time.RFC3339))
 
 	fcount := 0
 	fsum := 0

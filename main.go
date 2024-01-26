@@ -21,6 +21,7 @@ type Traceview struct {
 	Grep    Grep      `cmd:"" `
 	Process Processor `cmd:"" `
 	View    UI        `cmd:"" default:"withargs"`
+	Stack   Stack     `cmd:""`
 }
 
 type UI struct {
