@@ -22,6 +22,7 @@ type Traceview struct {
 	Process Processor `cmd:"" `
 	View    UI        `cmd:"" default:"withargs"`
 	Stack   Stack     `cmd:""`
+	CSV     CSV       `cmd:""`
 }
 
 type UI struct {
