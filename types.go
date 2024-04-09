@@ -109,6 +109,7 @@ func (s *TreeSpan) Walk(f func(parent *TreeSpan, span *TreeSpan) (bool, error)) 
 }
 
 type LoadedTrace struct {
+	TraceID   string
 	Tree      *TreeTrace
 	Orphans   *TreeSpan
 	AllTraces []*TreeSpan

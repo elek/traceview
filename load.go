@@ -42,6 +42,10 @@ func load(name string) (*LoadedTrace, error) {
 		}
 		l.AllTraces = append(l.AllTraces, spans[s.SpanID])
 
+		if l.TraceID == "" {
+			l.TraceID = s.TraceID
+		}
+
 	}
 
 	orphans := &TreeSpan{
