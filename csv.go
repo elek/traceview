@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 )
 
 type CSV struct {
-	FilterFile string `arg:""`
 	Path       string `arg:""`
+	FilterFile string `arg:""`
 }
 
 func MatchName(name string) func(span *TreeSpan) bool {
@@ -69,30 +68,9 @@ func (a CSV) Run() error {
 		return errors.WithStack(err)
 	}
 
-	stat, err := os.Stat(a.Path)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	if stat.IsDir() {
-		entries, err := os.ReadDir(a.Path)
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		for _, e := range entries {
-			if !e.IsDir() && strings.HasSuffix(e.Name(), "json") {
-				err := a.processFile(filepath.Join(a.Path, e.Name()), filters, writer)
-				if err != nil {
-					return err
-				}
-			}
-		}
-	} else {
-		err := a.processFile(a.Path, filters, writer)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return ProcessPath(a.Path, func(f string) error {
+		return a.processFile(f, filters, writer)
+	})
 }
 
 func (a CSV) processFile(path string, filters []FilterAndName, writer *csv.Writer) error {

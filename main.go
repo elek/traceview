@@ -18,11 +18,11 @@ func main() {
 }
 
 type Traceview struct {
-	Grep    Grep      `cmd:"" `
-	Process Processor `cmd:"" `
-	View    UI        `cmd:"" default:"withargs"`
-	Stack   Stack     `cmd:""`
-	CSV     CSV       `cmd:""`
+	Grep    Grep      `cmd:"" usage:"Grep for a pattern in one file or a directory of json files."`
+	Process Processor `cmd:"" usage:"Print out multiple matching lines (defined in an external filter file) from span(s)"`
+	View    UI        `cmd:"" default:"withargs" usage:"Interactive viewer of a Jaeger span"`
+	Stack   Stack     `cmd:"" usage:"filtered output of a span, showing full call hierarchies"`
+	CSV     CSV       `cmd:"" usage:"generate pivot table based on filter definition from an external file"`
 }
 
 type UI struct {

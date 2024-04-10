@@ -9,8 +9,8 @@ import (
 )
 
 type Processor struct {
-	FilterFile  string `arg:""`
 	Path        string `arg:""`
+	FilterFile  string `arg:""`
 	ProcessTags bool   `help:"print out process tags"`
 	FullPath    bool   `help:"print out full path of the input file"`
 }

@@ -3,43 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"os"
 	"path/filepath"
 	"strings"
 )
 
 type Grep struct {
-	Pattern     string `arg:""`
 	Path        string `arg:""`
+	Pattern     string `arg:""`
 	ProcessTags bool   `help:"print out process tags"`
 	FullPath    bool   `help:"print out full path of the input file"`
 }
 
 func (a Grep) Run() error {
-	stat, err := os.Stat(a.Path)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	if stat.IsDir() {
-		entries, err := os.ReadDir(a.Path)
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		for _, e := range entries {
-			if !e.IsDir() && strings.HasSuffix(e.Name(), "json") {
-				err := a.processFile(filepath.Join(a.Path, e.Name()))
-				if err != nil {
-					return err
-				}
-			}
-		}
-	} else {
-		err := a.processFile(a.Path)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return ProcessPath(a.Path, func(f string) error {
+		return a.processFile(f)
+	})
 }
 
 func (a Grep) processFile(path string) error {
